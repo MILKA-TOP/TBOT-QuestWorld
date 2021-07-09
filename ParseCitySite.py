@@ -52,3 +52,4 @@ def get_quests(now_url_part, check_main_site):
 
             quests_base[quest_name] = tag_array
             print(quest_name + " ==== " + str(tag_array))
+    return quests_base
