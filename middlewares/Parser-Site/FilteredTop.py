@@ -1,7 +1,6 @@
 import Tools
 from Tools import get_num
 
-
 # Получение списка типа сортировки квестов, который выводится пользователю
 def get_sort_type_list(sort_type_soup):
     out_sort_type_array = []

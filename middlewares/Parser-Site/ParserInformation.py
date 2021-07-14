@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 
 import FilteredTop
-import Tools
 from ParseCitySite import get_quests
 
 """def get_scary_level(url_quest):
