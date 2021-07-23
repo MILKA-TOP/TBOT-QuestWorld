@@ -1,3 +1,4 @@
+import plyer
 from bs4 import BeautifulSoup
 import requests
 
@@ -22,7 +23,7 @@ def get_city_links(cities_soup_array):
 
         array_city_soup = country.find_all('li')
         for element in array_city_soup:
-            print(element)
+            #            print(element)
             # Ниже страшная херня
             now_city_name = element.text.lower().replace('-', '')
             out_city_dict[now_city_name] = element.find('a').get('href')
@@ -38,12 +39,37 @@ req = requests.get(original_url)
 default_params_quest_filter = ['default', [], 0, 0, 0, 0, 0, []]
 array_use_filter = ["Использовать настройки по умолчанию", "Применить фильтр"]
 data = BeautifulSoup(req.text, 'html.parser')
-
+count = 0
 # Получение мапы, которая хранит в себе ссылки на сайты по квестам
 # Страна -> Город -> Ссылка
 quests_url = get_city_links(data.find_all('div', class_="col-sm-6"))
+prev_value = []
+another = []
+for country in quests_url:
+    for cities in quests_url[country]:
+        # 'Городская' ссылка
+        print(cities)
+        main_city_link = quests_url[country][cities]
 
-while True:
+        # Ссылка на фильтрацию запросов
+        filtered_link = main_city_link + filter_quests_postfix
+
+        # Получение ссылки на квесты, отфильтрованные пользователем
+        value = FilteredTop.use_filter(filtered_link,
+                                       BeautifulSoup(requests.get(filtered_link).text, 'html.parser'),
+                                       default_params_quest_filter)
+
+        if prev_value != value and cities != "абакан":
+            another.append(cities)
+        prev_value = value
+print(another)
+print(str(value))
+print("КОНЕЦ")
+plyer.notification.notify(message='Окончание проверки',
+                          app_name='Название твоего приложения',
+                          title='КОНЦ', )
+
+"""while True:
     print("Введите название страны")
     country_name = input().lower().replace(' ', '').replace('-', '')
     if country_name in quests_url:
@@ -77,3 +103,4 @@ while True:
                 break
     elif country_name == '0':
         break
+"""

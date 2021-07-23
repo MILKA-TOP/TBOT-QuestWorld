@@ -2,7 +2,7 @@ import random
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message, CallbackQuery
-from data import difficult_list, FORMAT_OUTPUT_QUEST
+from data import quest_difficult, FORMAT_OUTPUT_QUEST
 from handlers.users.start import update_data_user
 from keyboards.inline import random_keyboard
 
@@ -29,7 +29,7 @@ async def get_random_quest(message: Message, state: FSMContext):
     quest_value = quest_dict.get(quest_id)
 
     line = FORMAT_OUTPUT_QUEST.format(quest_value[0], quest_value[1], quest_value[2],
-                                      difficult_list[int(quest_value[3]) - 1],
+                                      list(quest_difficult.keys())[int(quest_value[3]) - 1],
                                       quest_value[5], quest_value[6], quest_value[4])
     await message.answer(line, reply_markup=random_keyboard)
 

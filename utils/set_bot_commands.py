@@ -6,6 +6,7 @@ async def set_default_commands(dp):
         [
             types.BotCommand("start", "Запустить бота"),
             types.BotCommand("help", "Вывести справку"),
+            types.BotCommand("filter", "Фильтрация квестов"),
             types.BotCommand("get_location", "Нынешнее положение"),
             types.BotCommand("location", "Положение"),
             types.BotCommand("random", "Выбирает случайный квест в вашем городе"),

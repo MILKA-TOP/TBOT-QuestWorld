@@ -1,6 +1,7 @@
 import Tools
 from Tools import get_num
 
+
 # Получение списка типа сортировки квестов, который выводится пользователю
 def get_sort_type_list(sort_type_soup):
     out_sort_type_array = []
@@ -13,6 +14,7 @@ def get_sort_type_list(sort_type_soup):
 def get_sort_type_value(data):
     sort_type_soup = data.find_all('div', class_="radio")
     sort_type_array = get_sort_type_list(sort_type_soup)
+    return sort_type_array
     Tools.console_out_array(sort_type_array)
     value = get_num(len(sort_type_array))
     return sort_type_soup[value].find('input').get('value')
@@ -24,6 +26,7 @@ def get_type_game_value(data):
     quest_type_soup = data.find_all('div', class_="checkbox")
     type_dict = dict()
     quest_type_array = get_sort_type_list(quest_type_soup)
+    return quest_type_array
     for i in range(len(quest_type_array)):
         type_dict[i] = quest_type_soup[i].find('input').get('value')
     while True:
@@ -58,6 +61,9 @@ def get_scroll_down_list(scroll_soup):
 def get_scroll_down_value(data):
     scroll_soup = data.find('select').find_all('option')
     scroll_list, scroll_value = get_scroll_down_list(scroll_soup)
+
+    return scroll_list
+
     Tools.console_out_array(scroll_list)
     value = get_num(len(scroll_list))
     return scroll_value[value]
@@ -79,7 +85,8 @@ def get_category_value(data):
     input_types = []
     category_soup = data.find('select').find_all('option')
     category_list, category_value = get_scroll_down_list(category_soup)
-
+    return category_list
+    """
     while True:
         print("Повторный выбор позволяет удалить значение")
         print(input_types)
@@ -93,7 +100,7 @@ def get_category_value(data):
             input_types.remove(value)
         else:
             input_types.append(value)
-    return input_types
+    return input_types"""
 
 
 # Эта функция занимается созданием функции, которую мы дальше будем парсить и выводить пользователю.
@@ -120,6 +127,20 @@ def use_filter(input_link, link_soup, filter_data_array):
     link_soup = link_soup.find('div', class_="filter-columns").find_all('div', "form-group")
     scroll_down_array = [-1, -1, 4, 5, 7, 10, 11, -1]
 
+
+#   return get_sort_type_value(link_soup[0])
+
+
+#    return get_type_game_value(link_soup[1])
+
+
+#    return get_category_value(link_soup[12])
+#    return get_scroll_down_value(link_soup[scroll_down_array[2]])
+#    return get_scroll_down_value(link_soup[scroll_down_array[3]])
+#    return get_scroll_down_value(link_soup[scroll_down_array[4]])
+#    return get_scroll_down_value(link_soup[scroll_down_array[5]])
+#    return get_scroll_down_value(link_soup[scroll_down_array[6]])
+"""
     while True:
 
         print(filter_data_array)
@@ -137,3 +158,4 @@ def use_filter(input_link, link_soup, filter_data_array):
             filter_data_array[filter_number] = get_category_value(link_soup[12])
         else:
             filter_data_array[filter_number] = get_scroll_down_value(link_soup[scroll_down_array[filter_number]])
+"""

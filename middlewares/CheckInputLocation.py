@@ -31,7 +31,6 @@ def get_soup():
     # Получение мапы, которая хранит в себе ссылки на сайты по квестам
     # Страна -> Город -> Ссылка
     quests_url = get_city_links(data.find_all('div', class_="col-sm-6"))
-    print(quests_url)
     return quests_url
 
 # def check_country():

@@ -15,11 +15,11 @@ async def bot_start(message: types.Message, state: FSMContext):
     try:
         await message.answer_photo(open("./data/Photo/start_preview.jpg", "rb"))
     finally:
-        await message.answer(START_TEXT + HELP_TEXT)
         data = await state.get_data()
-        print(len(data))
         if len(data) == 0:
             await update_data_user(state)
+        data = await state.get_data()
+        await message.answer(START_TEXT + HELP_TEXT)
 
 
 async def update_data_user(state: FSMContext):
@@ -33,5 +33,8 @@ async def update_data_user(state: FSMContext):
     await state.update_data(all_city_quests_link=main_city_link + FULL_QUESTS_POSTFIX)
     await state.update_data(filtered_link=main_city_link + FILTER_QUESTS_POSTFIX)
     await state.update_data(quest_dict=dict())
+    await state.update_data(filter_quest_dict=dict())
+    await state.update_data(default_params_quest_filter=None)
+    await state.update_data(filter_soup=None)
 
     await state.reset_state(with_data=False)

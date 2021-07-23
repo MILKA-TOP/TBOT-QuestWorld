@@ -51,10 +51,9 @@ def get_quests(now_url_part, check_main_site):
             quest_name = quest_name_html.text
 
             tag_array = [quest_name, quest_age, quest_people_count, quest_difficulty, quest_link, quest_type,
-                         quest_rating, quest_default_number_position, quest_link_img_part]
+                         quest_rating, quest_default_number_position, quest_link_img_part, quest_id]
 
             quest_default_number_position += 1
-
             quests_base[quest_id] = tag_array
 #            print(quest_id + " ==== " + str(tag_array))
     return quests_base
