@@ -10,10 +10,12 @@ from handlers.users.start import update_data_user
 from keyboards.inline.TEST_AIOGRAM_INLINE_STRUCT import menu_cd, categories_keyboard, subcategories_keyboard, \
     update_value, more_keyboards, page_checking, quest_keyboard, quest_page_checking
 from loader import dp
-from middlewares import get_filter_quests_list, get_category_list
-
+from middlewares import get_filter_quests_list, get_category_list, get_quests
 
 # Хендлер на команду /menu
+from middlewares.Filter_Parse import add_params_to_link
+
+
 @dp.message_handler(Command("filter"))
 async def show_menu(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -75,11 +77,15 @@ async def show(callback: CallbackQuery, state: FSMContext, category, **kwargs):
     now_value = data.get("now_params_quest_filter")
     search_link = data.get("filtered_link")
     main_link = data.get("main_city_link")
-
+    link = add_params_to_link(now_value, search_link) + "&page="
+    await state.update_data(checked_link_page=link)
+    link = link + "1"
     # Изменяем сообщение, и отправляем новые кнопки с подкатегориями
-    filtered_quests = get_filter_quests_list(now_value, search_link, main_link)
+    #    filtered_quests = get_filter_quests_list(now_value, search_link, main_link)
+    filtered_quests = get_quests(main_link, link)
     await state.update_data(quest_dict=filtered_quests)
     await state.update_data(quest_page=0)
+    await state.update_data(max_quests=0)
     markup = await quest_keyboard(filtered_quests, 0)
     await callback.message.edit_text(
         "Здесь указан список квестов по вашим фильтрам")
@@ -92,14 +98,27 @@ async def update_keyboard_page(call: CallbackQuery, callback_data: dict, state: 
 
     quests = data.get("quest_dict")
     value_page = data.get("quest_page")
+    link = data.get("checked_link_page")
+    main_link = data.get("main_city_link")
+    max_quests = data.get("max_quests")
+
     if callback_data.get("orientation") == "next":
-        value_page += 7
+        page = value_page // 6
+        if page % 2 == 0 and (page // 2 + 1) == max_quests:
+            link = link + str(page // 2 + 2)
+            new_quests_dict = get_quests(main_link, link)
+            if len(new_quests_dict) != 0:
+                quests.update(new_quests_dict)
+                await state.update_data(quest_dict=quests)
+                await state.update_data(max_quests=page // 2 + 2)
+
+        value_page += 6
     else:
-        value_page -= 7
+        value_page -= 6
 
     await state.update_data(quest_page=value_page)
 
-    markup = await quest_keyboard(quests, value_page * 7)
+    markup = await quest_keyboard(quests, value_page)
 
     await call.message.edit_reply_markup(markup)
 

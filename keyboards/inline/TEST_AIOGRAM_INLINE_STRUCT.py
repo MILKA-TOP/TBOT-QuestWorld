@@ -142,7 +142,7 @@ async def quest_keyboard(quest_dict: dict, start_number):
     inline_keyboard = []
     now_number = start_number
     array_id = list(quest_dict.keys())
-    while now_number < len(quest_dict) and (now_number - start_number) < 7:
+    while now_number < len(quest_dict) and (now_number - start_number) < 6:
         now_index = array_id[now_number]
         array_value = quest_dict.get(now_index)
         inline_keyboard.append(
