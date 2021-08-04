@@ -6,4 +6,3 @@ from . import filter
 from . import contacts
 from . import menu
 from . import offers
-from . import eva

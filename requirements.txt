@@ -2,3 +2,4 @@ aiogram~=2.12
 environs~=8.0.0
 requests~=2.7.0
 beautifulsoup4~=4.9.1
+bs4~=0.0.1

@@ -74,12 +74,17 @@ def get_offers_parse(link_offers: str, main_city_link: str):
 def get_full_offer_info(offer_link) -> dict:
     soup = BeautifulSoup(requests.get(offer_link).text, 'html.parser')
     information_part = soup.find('div', class_="row").find('div')
-    header_name = information_part.find('header').text
 
-    all_information_soup = information_part.find('article')
-    all_information_text = str(all_information_soup).replace('<article>', '')
-    all_information_text = all_information_text.replace('</article>', '')
-    all_information_text = all_information_text.replace('<p>', '<a>')
-    all_information_text = all_information_text.replace('</p>', '</a>\n\n')
+    header_name = information_part.find('header').text[:-1]
 
-    return {"head": header_name, "body": all_information_text}
+    try:
+        all_information_soup = information_part.find('article')
+        all_information_text = str(all_information_soup).replace('<article>', '')
+        all_information_text = all_information_text.replace('</article>', '')
+        all_information_text = all_information_text.replace('<p>', '<a>')
+        all_information_text = all_information_text.replace('</p>', '</a>\n\n')
+    except Exception:
+        all_information_text = information_part.text
+    all_information_text_sec = information_part.text
+
+    return {"head": header_name, "body": all_information_text, "body_text": all_information_text_sec}

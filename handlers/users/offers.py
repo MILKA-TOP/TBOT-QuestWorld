@@ -3,128 +3,172 @@ from aiogram.dispatcher.filters import Command, Text
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.callback_data import CallbackData
 
-from data import OFFERS_BUTTON, OFFERS_QUESTS_POSTFIX, FORMAT_OUTPUT_QUEST
-from data.Texts import OFFER_MESSAGE
-from handlers.users.filter import delete_media_message, delete_new_params_from_quest
-from handlers.users.start import update_data_user
-from keyboards.inline.Filter_inline_keyboard import quest_add_params_keyboard
-from keyboards.inline.Offer_keyboard import offer_cd, main_offer_keyboard, back_quest_menu_inline_markup_offer
+from data import OFFERS_BUTTON, OFFERS_QUESTS_POSTFIX, FORMAT_OUTPUT_QUEST, OFFER_DESCRIBE, \
+    QUEST_TELEGRAM_PAGE_COUNT, ERROR_MESSAGE, quest_difficult_demonstrate, DIFFICULTY, OFFER_MESSAGE, MAIN_CITY_LINK, \
+    loading_postfix_message, LINK, NEXT_VALUE, BACK_VALUE, \
+    show_offer_list_message, zero_offers_message, TYPE_CALLBACK, VALUE, PAGE, OPEN_ADD_INFO, OPEN_QUEST, OPEN_OFFER, \
+    BACK_LIST, OFFERS_MEDIA_MESSAGE, NEW_QUEST_VALUE, OFFERS_MESSAGE, OFFERS_DICT, QUEST_VALUE, OFFER_PAGE, OFFER, \
+    PRETTY_CITY_NAME
+
+from handlers.users.filter import delete_media_message
+from handlers.users.start import update_data_user, bot_start
+from keyboards.inline import main_universal_keyboard, quest_add_params_keyboard, offer_cd, \
+    temp_back_quest_menu_inline_markup_offer, back_list_offer_button
 from loader import dp
-from utils.parse.Offers_Parse import get_offers_parse, get_full_offer_info
-from utils.parse.ParseQuestSite import get_quest_params
+from utils.parse import get_offers_parse, get_full_offer_info
+from utils.parse import get_quest_params
+from utils.universal_function import show_add_quest_params, delete_category_messages, error_func
 
 
 @dp.message_handler(Command("offers") | Text(OFFERS_BUTTON))
 async def show_offers_city(message: Message, state: FSMContext):
-    data = await state.get_data()
-    main_city_link = data.get("main_city_link")
-    if len(data) == 0 or main_city_link is None:
-        await update_data_user(state)
-    data = await state.get_data()
-    main_city_link = data.get("main_city_link")
+    try:
+        data = await state.get_data()
+        main_city_link = data.get(MAIN_CITY_LINK)
 
-    offers_dict = get_offers_parse(main_city_link + OFFERS_QUESTS_POSTFIX, main_city_link)
-    if len(offers_dict) == 0:
-        await message.answer("В вашем городе не было обнаружено акций")
-    else:
-        markup, media = await main_offer_keyboard(offers_dict, 0)
-        offers_media_message = await message.answer_media_group(media)
-        offers_message = await message.answer("Выберите акцию из списка", reply_markup=markup)
-        await state.update_data(offers_dict=offers_dict)
-        await state.update_data(offers_media_message=offers_media_message)
-        await state.update_data(offers_message=offers_message)
-        await state.update_data(offer_page=0)
+        await delete_category_messages(data, OFFERS_MESSAGE, OFFERS_MEDIA_MESSAGE)
 
+        if main_city_link is None:
+            await update_data_user(state)
+            data = await state.get_data()
+            main_city_link = data.get(MAIN_CITY_LINK)
 
-"""
-    open_offer; value = index
-    open_quest; value = index
-    page_check: value = next/back
-"""
+        offers_dict = get_offers_parse(main_city_link + OFFERS_QUESTS_POSTFIX, main_city_link)
+
+        if len(offers_dict) == 0:
+            await message.answer(zero_offers_message)
+        else:
+            markup, media = await main_universal_keyboard(offers_dict, 0, OFFER_DESCRIBE, OFFER)
+            offers_media_message = await message.answer_media_group(media)
+            offers_message = await message.answer(show_offer_list_message.format(city=data.get(PRETTY_CITY_NAME)),
+                                                  reply_markup=markup)
+            await state.update_data(offers_dict=offers_dict, offers_media_message=offers_media_message)
+            await state.update_data(offers_message=offers_message, offer_page=0)
+    except Exception as e:
+        print("ERROR:", message.date, message.from_user, e, "show_offers_city")
 
 
 @dp.callback_query_handler(offer_cd.filter())
 async def offer_navigate(call: CallbackQuery, callback_data: dict, state: FSMContext):
-    type_callback = callback_data.get("type_callback")
-    value = callback_data.get("value")
+    type_callback = callback_data.get(TYPE_CALLBACK)
+
+    value = callback_data.get(VALUE)
 
     level = {
-        "open_offer": show_another_offer,
-        "open_quest": show_quest_offer,
-        "page": change_offer_keyboard,
-        "open_add_info": show_add_params_quest,
-        "back_list": back_offer_list
+        OPEN_OFFER: show_another_offer,
+        OPEN_QUEST: show_quest_offer,
+        PAGE: change_offer_keyboard,
+        OPEN_ADD_INFO: show_add_params_quest,
+        BACK_LIST: back_offer_list
     }
 
     function = level[type_callback]
 
-    await function(call, state, value=value)
+    try:
+        await function(call, state, value=value)
+    except Exception as e:
+        await error_func(call.message, state)
+        print("ERROR:", call.message.date, call.message.from_user, e, "offer_navigate")
+
+
+async def show_another_offer(call: CallbackQuery, state: FSMContext, value: str):
+    data = await state.get_data()
+    index = int(value)
+
+    await delete_media_message(data, OFFERS_MEDIA_MESSAGE)
+    await data.get(OFFERS_MESSAGE).delete()
+
+    loading_message = await call.message.answer(loading_postfix_message)
+
+    offer_value = data.get(OFFERS_DICT).get(index)
+    link = offer_value.get(LINK)
+    offer_info_dict = get_full_offer_info(link)
+    message_text = OFFER_MESSAGE.format(**offer_info_dict)
+    markup = back_list_offer_button
+    try:
+        await loading_message.edit_text(message_text, reply_markup=markup)
+    except Exception:
+        await loading_message.edit_text(
+            OFFER_MESSAGE.format(head=offer_info_dict.get("head"), body=offer_info_dict.get("body_text")),
+            reply_markup=markup)
+    await state.update_data(offers_message=loading_message)
+
+
+async def show_quest_offer(call: CallbackQuery, state: FSMContext, value: str):
+    data = await state.get_data()
+    index = int(value)
+    new_quest_value = data.get(NEW_QUEST_VALUE)
+
+    if new_quest_value is None:
+        await delete_media_message(data, OFFERS_MEDIA_MESSAGE)
+        await data.get(OFFERS_MESSAGE).delete()
+
+        loading_message = await call.message.answer(loading_postfix_message)
+        quest_value = data.get(OFFERS_DICT).get(index)
+        link = quest_value.get(LINK)
+        new_quest_value = get_quest_params(link, full_info=True)
+        quest_value.update(new_quest_value)
+
+        await state.update_data(new_quest_value=new_quest_value, quest_value=quest_value)
+
+        markup = await quest_add_params_keyboard(quest_value, callback_type=OFFER)
+
+        difficulty = quest_difficult_demonstrate[quest_value[DIFFICULTY] - 1]
+        await loading_message.edit_text(FORMAT_OUTPUT_QUEST.format(dif_text=difficulty, **quest_value),
+                                        reply_markup=markup)
+        await state.update_data(offers_message=loading_message)
+
+    else:
+        quest_value = data.get(QUEST_VALUE)
+        markup = await quest_add_params_keyboard(quest_value, callback_type=OFFER)
+
+        difficulty = quest_difficult_demonstrate[quest_value[DIFFICULTY] - 1]
+        quest_message = await call.message.edit_text(FORMAT_OUTPUT_QUEST.format(dif_text=difficulty, **quest_value),
+                                                     reply_markup=markup)
+        await state.update_data(offers_message=quest_message)
 
 
 async def back_offer_list(call: CallbackQuery, state: FSMContext, **kwargs):
     data = await state.get_data()
     await call.message.delete()
 
-    offers_dict = data.get("offers_dict")
-    page_number = data.get("offer_page")
-    markup, media = await main_offer_keyboard(offers_dict, page_number * 6)
+    if data.get(NEW_QUEST_VALUE) is not None:
+        await state.update_data(new_quest_value=None)
+        await state.update_data(new_quest_value=None)
+
+    offers_dict = data.get(OFFERS_DICT)
+    page_number = data.get(OFFER_PAGE)
+    markup, media = await main_universal_keyboard(offers_dict, page_number * QUEST_TELEGRAM_PAGE_COUNT, OFFER_DESCRIBE,
+                                                  OFFER)
 
     await state.update_data(offers_media_message=(await call.message.answer_media_group(media)))
-    filter_message = await call.message.answer("Выберите акцию из списка", reply_markup=markup)
+    filter_message = await call.message.answer(show_offer_list_message.format(city=data.get(PRETTY_CITY_NAME)),
+                                               reply_markup=markup)
     await state.update_data(offers_message=filter_message)
-
-
-async def show_another_offer(call: CallbackQuery, state: FSMContext, value: str):
-    data = await state.get_data()
-    index = int(value)
-    offers_message = data.get("offers_message")
-    await delete_media_message(data, "offers_media_message")
-    await offers_message.delete()
-    message = await call.message.answer("Загрузка. . .\n\n")
-    offers_dict = data.get("offers_dict")
-    offer_value = offers_dict[index]
-    link = offer_value.get("link")
-    text = OFFER_MESSAGE.format(**(get_full_offer_info(link)))
-    await message.edit_text(text, reply_markup=back_quest_menu_inline_markup_offer)
-
-
-async def show_quest_offer(call: CallbackQuery, state: FSMContext, value: str):
-    data = await state.get_data()
-    index = int(value)
-    offers_message = data.get("offers_message")
-    await delete_media_message(data, "offers_media_message")
-    await offers_message.delete()
-    message = await call.message.answer("Загрузка. . .\n\n")
-    offers_dict = data.get("offers_dict")
-    quest_value = offers_dict[index]
-    link = quest_value.get("link")
-    quest_value.update(get_quest_params(link, full_info=True))
-    markup = await quest_add_params_keyboard(quest_value, callback_type="offer")
-    await message.edit_text(FORMAT_OUTPUT_QUEST.format(dif_text="difficulty", **quest_value), reply_markup=markup)
 
 
 async def change_offer_keyboard(call: CallbackQuery, state: FSMContext, value: str):
     data = await state.get_data()
-    old_page = data.get("offer_page")
-    offers_dict = data.get("offers_dict")
-    if value == "next":
-        old_page += 1
-    elif value == "back":
-        old_page -= 1
-    markup, media = await main_offer_keyboard(offers_dict, old_page * 6)
-    await delete_media_message(data, "offers_media_message")
-    await (data.get("offers_message")).delete()
+    page_offer = data.get(OFFER_PAGE)
+    offers_dict = data.get(OFFERS_DICT)
+    if value == NEXT_VALUE:
+        page_offer += 1
+    elif value == BACK_VALUE:
+        page_offer -= 1
+    markup, media = await main_universal_keyboard(offers_dict, page_offer * QUEST_TELEGRAM_PAGE_COUNT, OFFER_DESCRIBE,
+                                                  OFFER)
+    await delete_media_message(data, OFFERS_MEDIA_MESSAGE)
+    await (data.get(OFFERS_MESSAGE)).delete()
 
     offers_media_message = await call.message.answer_media_group(media)
-    offers_message = await call.message.answer("Выберите акцию из списка", reply_markup=markup)
-    await state.update_data(offers_media_message=offers_media_message)
-    await state.update_data(offers_message=offers_message)
-    await state.update_data(offer_page=old_page)
+    offers_message = await call.message.answer(show_offer_list_message.format(city=data.get(PRETTY_CITY_NAME)),
+                                               reply_markup=markup)
+
+    await state.update_data(offers_media_message=offers_media_message, offers_message=offers_message,
+                            offer_page=page_offer)
 
 
 async def show_add_params_quest(call: CallbackQuery, state: FSMContext, value: str):
     data = await state.get_data()
-    offers_dict = data.get("offers_dict")
-    index = value
-    offer_value = offers_dict.get(index)
-    offer_link = offer_value.get("link")
+    offer_value = data.get(QUEST_VALUE)
+    await show_add_quest_params(call, value, offer_value, temp_back_quest_menu_inline_markup_offer)

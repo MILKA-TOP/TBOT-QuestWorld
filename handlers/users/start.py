@@ -16,9 +16,9 @@ async def bot_start(message: types.Message, state: FSMContext):
         await message.answer_photo(open("./data/Photo/start_preview.jpg", "rb"))
     finally:
         data = await state.get_data()
+        await message.answer(START_TEXT + HELP_TEXT, reply_markup=main_keyboard)
         if len(data) == 0:
             await update_data_user(state)
-        await message.answer(START_TEXT + HELP_TEXT, reply_markup=main_keyboard)
 
 
 async def update_data_user(state: FSMContext):

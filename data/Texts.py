@@ -6,13 +6,14 @@ START_TEXT = """
 HELP_TEXT = """
 Ниже представлен список команд бота:
     
-    /menu - Меню с командами бота
-    /random - Случайный вест
-    /filter - Список квестов по фильтрам
-    /help - Список команд
-    /get_location - Запрос нынешнего положени
+    /filter - Список квестов по фильтрам 
+    /random - Случайный квест в вашем городе
+    /offers - Акции в вашем городе
     /location - Изменение положения
-    
+    /get_location - Запрос нынешнего положени
+    /contacts - Ссылка на наши социальные сети
+    /help - Список команд
+    /menu - Открытие/Закрытие меню с командами бота
 """
 
 ZERO_RESULTS_FILTER = """В городе {city}  не было найдено ни одного квеста по вашим фильтрам.
@@ -26,8 +27,8 @@ FORMAT_OUTPUT_QUEST_RANDOM = """
 <b>Сложность:</b> {dif_text}
 <b>Тип игры:</b> {type}
 <b>Рейтинг по отзвам:</b>{rating}
+<b>Город:</b> {city}
 <b>Ссылка:</b> {link}
-
 """
 
 FORMAT_OUTPUT_QUEST = """
@@ -71,14 +72,18 @@ FORMAT_OUTPUT_QUEST_ADD = """
 
 NOW_CHECK_LOCATION = """Квесты рассматриваются в городе {}."""
 
-CITY_TAKE = "Введите пожалуйста город, в котором вы хотите выбрать квесты"
+CITY_TAKE = """Введите пожалуйста город, в котором вы хотите выбрать квесты.
 
-COUNTRY_ERROR = "Данной страны нет в базе данных, либо вы опечатались. Пожалуйста, введите другую страну."
-CITY_ERROR = "Данного города нет в базе данных, либо вы опечатались. Пожалуйста, введите другой город."
+<i>В случае отмены пропишите /cancel</i>"""
+
+CITY_ERROR = """Данного города нет в базе данных, либо вы опечатались. Пожалуйста, введите другой город.
+
+<i>В случае отмены пропишите /cancel</i>"""
 
 FULL_QUESTS_POSTFIX = "/quests"
 FILTER_QUESTS_POSTFIX = "/quests/search?"
 OFFERS_QUESTS_POSTFIX = "/offers"
+PAGE_POSTFIX_LINK = "&page="
 
 QUEST_DESCRIBE = """{number}) {name}:
 Количество человек: {people_count}
@@ -92,21 +97,56 @@ OFFER_DESCRIBE = """{number}) <b>{name}</b>:
 
 """
 
-ONE_PAGE_CATEGORY_TEXT = "one_sub"
-MORE_PAGES_CATEGORY_TEXT = "more_sub"
+ONE_PAGE_CATEGORY = "one_sub"
+MORE_PAGES_CATEGORY = "more_sub"
 
 QUEST_LINE = "{numb}) {name}"
 
-more_pages_subcategory_list_str = "more_pages_subcategory_list"
-now_params_quest_filter_str = "now_params_quest_filter"
-media_message_str = "media_message"
-page_number_dict_str = "page_number_dict"
-new_params_str = "new_params"
-now_quest_str = "now_quest"
-quest_dict_str = "quest_dict"
-index_str = "index"
-difficulty_str = "difficulty"
-now_quest_page_str = "now_quest_page"
+MAIN_CITY_LINK = "main_city_link"
+MORE_PAGES_SUBCATEGORY_LIST = "more_pages_subcategory_list"
+NOW_PARAMS_QUEST_FILTER = "now_params_quest_filter"
+NEW_QUEST_VALUE = "new_quest_value"
+QUEST_VALUE = "quest_value"
+FILTER_MEDIA_MESSAGE = "filer_media_message"
+OFFERS_MEDIA_MESSAGE = "offers_media_message"
+MORE_PAGE_NUMBER_DICT = "more_page_number_dict"
+NEW_PARAMS = "new_params"
+NOW_QUEST = "now_quest"
+OFFER = "offer"
+QUEST = "quest"
+FILTER = "filter"
+QUEST_DICT = "quest_dict"
+OFFERS_DICT = "offers_dict"
+INDEX = "index"
+DIFFICULTY = "difficulty"
+NOW_QUEST_PAGE = "now_quest_page"
+FILTER_MESSAGE = "filter_message"
+OFFERS_MESSAGE = "offers_message"
+MENU_FILTER = "menu_filter"
+PAGE_SUB = "page_sub"
+UPD_VAL = "upd_val"
+SHOW_QUEST = "show_quest"
+CATEGORY = "category"
+TYPE_CALLBACK = "type_callback"
+VALUE_CALLBACK = "value_callback"
+VALUE = "value"
+NEXT_VALUE = "next"
+BACK_VALUE = "back"
+ONE_PAGE_KEYBOARD = "one_page_keyboard"
+MORE_PAGES_KEYBOARD = "more_pages_keyboard"
+FILTERED_LINK = "filtered_link"
+PRETTY_CITY_NAME = "pretty_city_name"
+LINK = "link"
+OPEN_ADD_INFO = "open_add_info"
+BACK_QUEST = "back_quest"
+PAGE = "page"
+OFFER_PAGE = "offer_page"
+BACK_LIST = "back_list"
+OPEN_QUEST = "open_quest"
+OPEN_OFFER = "open_offer"
+CHECKED_LINK_PAGE = "checked_link_page"
+DEFAULT_PARAM = "default_param"
+OFFER_TYPE = "offer_type"
 
 ERROR_MESSAGE = """
 Произошла непредвиденная ошибка в работе бота.
@@ -117,17 +157,34 @@ ERROR_MESSAGE = """
 
 CLOSE_MENU_KEYBOARD_MESSAGE = """Ваша клавиатура была скрыта. 
 
-Для её открытия используйте команду /menu"""
+<i>Для её открытия используйте команду /menu</i>"""
 
 OPEN_MENU_KEYBOARD_MESSAGE = """Ваша клавиатура была открыта. 
 
-Для её закрытия используйте команду /menu"""
+<i>Для её закрытия используйте команду /menu</i>"""
 
-QUESTS_BY_FILTER_BUTTON = "Выбор квеста по фильтрам"
-RANDOM_QUEST_BUTTON = "Случайный квест"
-OFFERS_BUTTON = "Акции в вашем городе"
-GET_CITY_BUTTON = "Выбор города"
-CONTACTS_BUTTON = "Контакты"
-HELP_BUTTON = "Команды бота"
+QUESTS_BY_FILTER_BUTTON = "🔍 Выбор квеста по фильтрам"
+RANDOM_QUEST_BUTTON = "🎲 Случайный квест"
+OFFERS_BUTTON = "💸 Акции в вашем городе"
+GET_CITY_BUTTON = "🏙 Выбор города"
+CONTACTS_BUTTON = "📞 Контакты"
+HELP_BUTTON = "💭 Команды бота"
+NEXT_PAGE_BUTTON = "➡️"
+PREV_PAGE_BUTTON = "⬅️"
+TO_INLINE_LIST_BUTTON = "📋 К списку"
+MENU_INLINE_BUTTON = "🏠 К меню"
+SHOW_QUEST_LIST_BUTTON = "🗝 Показать квесты по фильтру"
+QUEST_BACK_INFO_BUTTON = "🗝 К основной информации квеста"
+DEFAULT_PARAM_BUTTON = "❇️ Установить настройки по умолчанию"
 
 OFFER_MESSAGE = "<b>{head}:</b>\n\n{body}"
+loading_postfix_message = "\n\nЗагрузка..."
+show_quest_list_message = """Выберите квест из <a href="{link}"> списка </a> ({city}):"""
+show_offer_list_message = "Выберите акцию из списка ({city}):"
+zero_offers_message = "В вашем городе не было обнаружено акций"
+subcategory_info_message = """{information}
+<i>ℹ️ Повторное нажатие убирает выббранный элемент из списка.</i>
+
+"""
+
+cancel_command = "/cancel"
