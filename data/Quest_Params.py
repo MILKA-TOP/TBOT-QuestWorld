@@ -1,8 +1,8 @@
 def age_dict(years_dict: dict):
     out_dict = {"Любой": -1}
     for element in list(years_dict.values()):
-        out_dict["🧍‍♂ Без сопровождения - " + str(element)] = "a-" + str(element)
-        out_dict["👨‍👩‍👦 С сопровождением - " + str(element)] = "s-" + str(element)
+        out_dict["🧍‍♂ Без родителей - " + str(element)] = "a-" + str(element)
+        out_dict["👨‍👩‍👦 С родителями - " + str(element)] = "s-" + str(element)
     return out_dict
 
 

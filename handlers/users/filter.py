@@ -14,7 +14,6 @@ from data import default_params_quest_filter, FORMAT_OUTPUT_QUEST_RANDOM, ONE_PA
     NEXT_VALUE, BACK_VALUE, FILTERED_LINK, PAGE_POSTFIX_LINK, PRETTY_CITY_NAME, VALUE, loading_postfix_message, LINK, \
     show_quest_list_message, OPEN_ADD_INFO, BACK_QUEST, PAGE, BACK_LIST, OPEN_QUEST, CHECKED_LINK_PAGE, QUEST, \
     DEFAULT_PARAM, SEARCH_LIST_QUEST_COUNT, subcategory_info_message
-
 from handlers.users.start import update_data_user
 from keyboards.inline import categories_keyboard, subcategories_one_page_keyboard, subcategories_more_page_keyboards, \
     filter_cd, back_menu_filter_markup, main_universal_keyboard, quest_add_params_keyboard, \
