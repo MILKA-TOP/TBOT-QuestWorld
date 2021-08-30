@@ -29,6 +29,8 @@ from utils.universal_function import show_add_quest_params, delete_category_mess
 async def show_menu(message: types.Message, state: FSMContext):
     data = await state.get_data()
     main_city_link = data.get(MAIN_CITY_LINK)
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(message, "filter"))
     if main_city_link is None:
         await update_data_user(state)
         data = await state.get_data()
@@ -72,6 +74,8 @@ async def navigate_filter(call: CallbackQuery, callback_data: dict, state: FSMCo
     }
 
     current_level_function = levels[type_callback]
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(call.message, value))
     try:
         await current_level_function(
             call, state,
@@ -265,7 +269,8 @@ async def navigate_quests(call: CallbackQuery, callback_data: dict, state: FSMCo
         PAGE: update_keyboard_page,
         BACK_LIST: back_quest_list
     }
-
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(call.message, value))
     current_level_function = levels[type_callback]
     try:
         await current_level_function(

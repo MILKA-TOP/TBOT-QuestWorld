@@ -14,6 +14,8 @@ from loader import dp
 
 @dp.message_handler(Command('get_location'))
 async def out_location(message: Message, state: FSMContext):
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(message, "get_location"))
     try:
         data = await state.get_data()
         if len(data) == 0 or data.get(PRETTY_CITY_NAME) is None:
@@ -64,6 +66,8 @@ async def get_city(message: Message, state: FSMContext):
             await state.reset_state(with_data=False)
             await delete_category_messages(data, FILTER_MESSAGE, FILTER_MEDIA_MESSAGE)
             await delete_category_messages(data, OFFERS_MESSAGE, OFFERS_MEDIA_MESSAGE)
+            from utils.universal_function import get_info_person_logging
+            print(get_info_person_logging(message, "get_city"))
 
         else:
             await message.answer(CITY_ERROR)

@@ -23,6 +23,8 @@ from utils.universal_function import show_add_quest_params, delete_category_mess
 @dp.message_handler(Command("offers") | Text(OFFERS_BUTTON))
 async def show_offers_city(message: Message, state: FSMContext):
     try:
+        from utils.universal_function import get_info_person_logging
+        print(get_info_person_logging(message, "offers"))
         data = await state.get_data()
         main_city_link = data.get(MAIN_CITY_LINK)
 
@@ -61,8 +63,9 @@ async def offer_navigate(call: CallbackQuery, callback_data: dict, state: FSMCon
         OPEN_ADD_INFO: show_add_params_quest,
         BACK_LIST: back_offer_list
     }
-
     function = level[type_callback]
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(call.message, value))
 
     try:
         await function(call, state, value=value)

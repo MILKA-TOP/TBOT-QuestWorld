@@ -12,6 +12,9 @@ from utils.parse.CheckInputLocation import get_links_soup
 
 @dp.message_handler(CommandStart())
 async def bot_start(message: types.Message, state: FSMContext):
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(message, "start"))
+
     try:
         await message.answer_photo(open("./data/Photo/start_preview.jpg", "rb"))
     finally:

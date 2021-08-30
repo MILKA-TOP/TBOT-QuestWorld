@@ -13,6 +13,8 @@ from utils.parse import get_quests
 
 @dp.message_handler(Command("random") | Text(RANDOM_QUEST_BUTTON))
 async def get_random_quest(message: Message, state: FSMContext, first_send=True):
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(message, "random"))
     try:
         data = await state.get_data()
         url_main = data.get(MAIN_CITY_LINK)
@@ -40,6 +42,8 @@ async def get_random_quest(message: Message, state: FSMContext, first_send=True)
 
 @dp.callback_query_handler(text="next_random")
 async def update_quest(call: CallbackQuery, state: FSMContext):
+    from utils.universal_function import get_info_person_logging
+    print(get_info_person_logging(call.message, "next_random"))
     try:
 
         await call.answer(cache_time=60)

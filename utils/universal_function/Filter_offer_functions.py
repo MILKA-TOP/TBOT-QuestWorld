@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from data import MAX_MESSAGE_LENGTH, FILTER_MEDIA_MESSAGE, NEW_PARAMS, NOW_QUEST, MORE_PAGES_SUBCATEGORY_LIST, \
-    more_pages_category_dict, ERROR_MESSAGE
+    more_pages_category_dict, ERROR_MESSAGE, log_command_format
 from handlers.users.start import bot_start
 
 
@@ -61,3 +63,12 @@ def get_more_page_dict(data: dict) -> dict:
         more_params_dict[element] = more_subcategory_pages_dict.get(more_pages_category_dict.get(element))
 
     return more_params_dict
+
+
+def get_info_person_logging(message: Message, command: str):
+    contacts_user = message.chat
+    id = contacts_user.id
+    username = contacts_user.username
+    first_name = contacts_user.first_name
+    time = datetime.now()
+    return log_command_format.format(id=id, time=time, username=username, first_name=first_name, command=command)
