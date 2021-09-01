@@ -68,9 +68,9 @@ async def navigate_filter(call: CallbackQuery, callback_data: dict, state: FSMCo
         ONE_PAGE_CATEGORY: list_one_page_subcategory,  # Отдаем одностраничную подкатегории
         MORE_PAGES_CATEGORY: list_more_page_subcategory,  # Отдаем многостраничные подкатегории
         PAGE_SUB: update_more_subcategory_keyboard,  # Обновление клавиатуру из многостраничной подкатегории
-        UPD_VAL: update_filter_information,  # Изменение значения пользователя для последующей фильттрации
-        SHOW_QUEST: show_filtered_quests,  # Показать список квестов по фильтрации пользователя
-        DEFAULT_PARAM: use_default_params
+        UPD_VAL: update_filter_information,  # Изменение значения пользователя для последующей фильтрации
+        SHOW_QUEST: show_filtered_quests,  # Показать список квестов по фильтрам пользователя
+        DEFAULT_PARAM: use_default_params # Установка дефолтных параметров
     }
 
     current_level_function = levels[type_callback]

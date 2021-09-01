@@ -1,10 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 
-from data import FILTER_QUESTS_POSTFIX, array_params_link_params, category_filter_dict, quest_difficult_demonstrate, \
+from data import FILTER_QUESTS_POSTFIX, category_filter_dict, quest_difficult_demonstrate, \
     link_param_dict, param_text_by_user_text_dict
 from data.Quest_Params import help_link_param_dict
-from utils.parse.ParseCitySite import get_quests
+
+"""
+    Получение словарей "Многостраничных подкатегорий"
+"""
 
 
 def get_category_soup(main_city_link):
@@ -13,11 +16,9 @@ def get_category_soup(main_city_link):
     return soup.find('select', id="category_").find_all('option')
 
 
-def get_sort_type_list(sort_type_soup):
-    out_sort_type_array = []
-    for element in sort_type_soup:
-        out_sort_type_array.append(element.text)
-    return out_sort_type_array
+"""
+    Составление фильтрованной ссылке по параметрам, введённым пользователем
+"""
 
 
 def add_params_to_link(settings, search_link):
@@ -43,6 +44,11 @@ def add_params_to_link(settings, search_link):
     return search_link[:-1]
 
 
+"""
+    Получение словаря подкатегории "Жанр"
+"""
+
+
 def get_category_list(checked_link):
     soup_list = get_category_soup(checked_link)
     category_dict = dict()
@@ -52,10 +58,20 @@ def get_category_list(checked_link):
     return category_dict
 
 
+"""
+    Получение ключа словаря по его элементу
+"""
+
+
 def get_key(d, value):
     for k, v in d.items():
         if str(v) == str(value):
             return k
+
+
+"""
+    Формирование текста сообщения, где отображается название подкатегории и выбранные элементы данной подкатегории
+"""
 
 
 def get_text_category(filter_params: dict, more_pages_params: dict, category: str):
@@ -77,6 +93,11 @@ def get_text_category(filter_params: dict, more_pages_params: dict, category: st
         text = text + str(get_key(now_dict, now_value)) + "\n"
 
     return text
+
+
+"""
+    Формирование текста сообщения с выбранными подкатегориями
+"""
 
 
 def get_text_now_choose(filter_params: dict, more_pages_params: dict, city: str):
@@ -102,6 +123,11 @@ def get_text_now_choose(filter_params: dict, more_pages_params: dict, city: str)
     return text
 
 
+"""
+    Добавление или удаление символа `✅` с кнопки, которое зависит: выбрана ли соответствующая подкатегория или нет
+"""
+
+
 def button_subcategory_text(updated_value, subcategory, subcategory_dict):
     if not isinstance(updated_value, list):
         if str(subcategory_dict.get(subcategory)) == str(updated_value):
@@ -118,6 +144,11 @@ def button_subcategory_text(updated_value, subcategory, subcategory_dict):
             text = f"{subcategory}"
 
     return text
+
+
+"""
+Приведение параметров `now_number` к параметрам `array_value`
+"""
 
 
 def get_quest_params_dict(array_value, now_number):

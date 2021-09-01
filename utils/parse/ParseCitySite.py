@@ -4,6 +4,10 @@ import requests
 from data import FULL_QUESTS_POSTFIX
 
 
+"""
+    Парсинг и сохранение всех квестов в поле с тегом `main`
+"""
+
 def get_quests(now_url_part, check_main_site):
     quests_base = dict()  # Наш словарь с названием квеста и его характеристиками
 
@@ -41,15 +45,11 @@ def get_quests(now_url_part, check_main_site):
 
             img_soup = quest_soup.find('img')
             quest_link_img_part = img_soup.get('data-original')
-            #    quest_link_img = check_main_site + quest_soup.find('img').get("src")
             quest_link_img = now_url_part + quest_link_img_part
 
             quest_id = quest_link_img_part.split('/')[3]
 
             quest_link = now_url_part + FULL_QUESTS_POSTFIX + "/" + str(quest_id)
-            #    quest_link = quest_name_html.find('a').get('href')
-            #    if quest_link[:6] != "https:":
-            #        quest_link = now_url_part + quest_link
 
             quest_type = quest_soup.find('span', class_="game-type").text
 
@@ -62,10 +62,8 @@ def get_quests(now_url_part, check_main_site):
                         "difficulty": quest_difficulty, "link": quest_link, "type": quest_type, "rating": quest_rating,
                         "default_number_position": quest_default_number_position, "link_img_part": quest_link_img_part,
                         "id": quest_id, "link_img": quest_link_img}
-            tag_array = [quest_name, quest_age, quest_people_count, quest_difficulty, quest_link, quest_type,
-                         quest_rating, quest_default_number_position, quest_link_img_part, quest_id, quest_link_img]
 
             quest_default_number_position += 1
             quests_base[quest_id] = tag_dict
-    #            print(quest_id + " ==== " + str(tag_array))
+
     return quests_base

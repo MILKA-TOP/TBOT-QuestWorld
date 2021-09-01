@@ -3,15 +3,24 @@ from datetime import datetime
 from aiogram.dispatcher import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from data import MAX_MESSAGE_LENGTH, FILTER_MEDIA_MESSAGE, NEW_PARAMS, NOW_QUEST, MORE_PAGES_SUBCATEGORY_LIST, \
+from data import MAX_MESSAGE_LENGTH, NEW_PARAMS, NOW_QUEST, MORE_PAGES_SUBCATEGORY_LIST, \
     more_pages_category_dict, ERROR_MESSAGE, log_command_format
 from handlers.users.start import bot_start
+
+"""
+    Вывод ошибок
+"""
 
 
 async def error_func(message: Message, state: FSMContext):
     await message.answer(ERROR_MESSAGE)
     await state.reset_data()
     await bot_start(message=message, state=state)
+
+
+"""
+    Вывод пользователю дополнительных параметров квеста
+"""
 
 
 async def show_add_quest_params(call: CallbackQuery, value: str, quest_value: dict, markup):
@@ -21,6 +30,11 @@ async def show_add_quest_params(call: CallbackQuery, value: str, quest_value: di
         message_text = message_text[:MAX_MESSAGE_LENGTH]
     await call.message.edit_text(text=message_text,
                                  reply_markup=markup)
+
+
+"""
+    Удаление "медиа-сообщения" с набором фотографий со страницы квеста
+"""
 
 
 async def delete_media_message(data: dict, media_message_type):
@@ -33,6 +47,11 @@ async def delete_media_message(data: dict, media_message_type):
             pass
 
 
+"""
+    Удаление основного сообщения
+"""
+
+
 async def delete_category_messages(data: dict, message_type: str, media_message_type: str):
     try:
         message = data.get(message_type)
@@ -41,6 +60,11 @@ async def delete_category_messages(data: dict, message_type: str, media_message_
             await delete_media_message(data, media_message_type)
     except Exception:
         pass
+
+
+"""
+    Удаление дополнительных параметров квеста для предотвращения переполнения памяти
+"""
 
 
 async def delete_new_params_from_quest(data: dict) -> dict:

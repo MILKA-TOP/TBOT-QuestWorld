@@ -1,5 +1,9 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
+
+"""
+    Парсинг ссылки выбранного "Квеста"
+"""
 
 
 def get_quest_params(quest_link, full_info=False):

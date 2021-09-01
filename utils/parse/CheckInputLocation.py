@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
+"""
+    Составление словаря со списком всех городов и соответствующих ссылок
+"""
+
 
 def get_city_links(cities_soup_array):
     all_cities_links_dict = dict()
@@ -19,6 +23,11 @@ def get_city_links(cities_soup_array):
     return all_cities_links_dict, pretty_cities_dict
 
 
+"""
+    Обработка и получение `soup` из ссылки со списком всех городов
+"""
+
+
 def get_links_soup():
     original_url = "https://mir-kvestov.ru/cities"
 
@@ -27,5 +36,3 @@ def get_links_soup():
     data = BeautifulSoup(req.text, 'html.parser')
 
     return get_city_links(data.find_all('div', class_="col-sm-6"))
-
-# def check_country():

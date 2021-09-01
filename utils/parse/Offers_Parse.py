@@ -3,6 +3,10 @@ from bs4 import BeautifulSoup
 
 from data import FULL_QUESTS_POSTFIX
 
+"""
+    Анализ и парсинг элемента "Акции-квеста"
+"""
+
 
 def get_quest_information(quest_soup: BeautifulSoup, main_city_link: str):
     img_soup = quest_soup.find('img')
@@ -21,6 +25,11 @@ def get_quest_information(quest_soup: BeautifulSoup, main_city_link: str):
             "offer_type": "quest"}
 
 
+"""
+    Анализ и парсинг элемента "Обычной акции"
+"""
+
+
 def get_offer_information(offer_soup: BeautifulSoup, main_city_link):
     img_soup = offer_soup.find('img')
     quest_link_img = main_city_link + img_soup.get('src')
@@ -31,6 +40,11 @@ def get_offer_information(offer_soup: BeautifulSoup, main_city_link):
     description = info_soup.find('p').text
     link = main_city_link + info_soup.find('a').get('href')
     return {"link_img": quest_link_img, "name": name, "link": link, "description": description, "offer_type": "offer"}
+
+
+"""
+    Получение всех "Действующих акций" и их "Описания"
+"""
 
 
 def get_offers_parse(link_offers: str, main_city_link: str):
@@ -69,6 +83,11 @@ def get_offers_parse(link_offers: str, main_city_link: str):
 
     quest_offers_dict.update(another_offers_dict)
     return quest_offers_dict
+
+
+"""
+    Основная функция по сбору информации "Акций"
+"""
 
 
 def get_full_offer_info(offer_link) -> dict:
