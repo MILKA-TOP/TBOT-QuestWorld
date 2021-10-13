@@ -186,6 +186,6 @@ subcategory_info_message = """{information}
 <i>ℹ️ Повторное нажатие убирает выббранный элемент из списка.</i>
 
 """
-log_command_format = "[{time}] id{id} || @{username} ({first_name}): {command}()"
+log_command_format = "[{time}] id{id} || @{username} ({first_name} {second_name}): {command}()"
 
 cancel_command = "/cancel"

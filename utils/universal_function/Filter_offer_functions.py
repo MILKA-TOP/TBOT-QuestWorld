@@ -94,5 +94,7 @@ def get_info_person_logging(message: Message, command: str):
     id = contacts_user.id
     username = contacts_user.username
     first_name = contacts_user.first_name
+    second_name = contacts_user.last_name
     time = datetime.now()
-    return log_command_format.format(id=id, time=time, username=username, first_name=first_name, command=command)
+    return log_command_format.format(id=id, time=time, username=username, first_name=first_name,
+                                     second_name=second_name, command=command)
